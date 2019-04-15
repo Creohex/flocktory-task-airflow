@@ -1,42 +1,29 @@
 from common import *
-import os
-import psycopg2
+from log_analyzer import analyze_hourly, analyze_indicents
+import os, psycopg2, unittest
 
-### tests: ###
+
+# TODO: ...
 # common:
-#  |- helper funcs
-#   \ sql queries (select/insert)
-# ...
+class TestCommonMethods(unittest.TestCase):
+    def test_datetime_hour_truncated(self):
+        self.assertTrue(True)
+        pass
 
-# conn = psycopg2.connect(user = "docker",
-#                         password = "P@ssw0rd",
-#                         host = "127.0.0.1",
-#                         port = "5432",
-#                         database = "main")
-
-# print(conn)
-
-# cur = conn.cursor()
-# cur.execute("select * from level")
-# print(cur)
-# cur.fetchone()
-# for x in cur:
-#     print(x)
-
-# cur.execute("DELETE FROM level WHERE level='TRACE'")
-# conn.commit()
-# cur.fetchone()
-# conn.close()
+    def test_is_datetime_hour_truncated(self):
+        self.assertTrue(False)
+        pass
 
 
-# os.environ['PGUSER'] = 'docker'
-# os.environ['PGPORT'] = "5432"
-# os.environ['PGPASSWORD'] = 'P@ssw0rd'
-# os.environ['PGDATABASE'] = 'main'
-# os.environ['E'] = "20"
-# os.environ['PGHOST'] = 'db'
+# TODO: ...
+# log_analyzer:
+class TestCommonMethods(unittest.TestCase):
+    def test_analyze_hourly(self):
+        pass
+    
+    def test_analyze_incidents(self):
+        pass
 
-# from datetime import datetime
-# from dateutil import parser
-# x = parser.parse('2019-04-14T04:00:00+00:00')
-# print(x)
+
+if __name__ == '__main__':
+    unittest.main()

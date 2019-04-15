@@ -6,6 +6,7 @@ from dateutil import parser
 import psycopg2
 import common
 
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -22,14 +23,20 @@ dag = DAG('log_analyzer', default_args=default_args,
           schedule_interval=timedelta(hours=1))
 
 def analyze_hourly(ds, **kwargs):
-    ts = parser.parse(kwargs['ts'])
-    # TODO: ...
-    return "hourly results..."
+    try:
+        ts = parser.parse(kwargs['ts'])
+        # TODO: ...
+        return "hourly results..."
+    except Exception as e:
+        return "Error in 'analyze_hourly'. Info: \n\n%s" % str(e)
 
 def analyze_indicents(ds, **kwargs):
-    ts = parser.parse(kwargs['ts'])
-    # TODO: ...
-    return "incident results..."
+    try:
+        ts = parser.parse(kwargs['ts'])
+        # TODO: ...
+        return "incident results..."
+    except Exception as e:
+        return "Error in 'analyze_incidents'. Info: \n\n%s" % str(e)
 
 hourly_analyzer = PythonOperator(
     task_id="hourly_analyzer",
