@@ -8,7 +8,7 @@ Interview task (apache airflow, docker compose, postresql)
     docker-compose up
 
 
-#### run airflow server/scheduler:
+#### Start airflow server/scheduler:
 
 a) Build/Run locally:
 
