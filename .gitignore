@@ -1,3 +1,12 @@
+# vscode
+.vscode/*
+
+# db_stuff
+/db/data/*
+
+# env file
+/*.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
