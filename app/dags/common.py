@@ -13,14 +13,13 @@ def is_datetime_hour_truncated(dt):
 
 def get_env_vars():
     """ Return dict containing required environemnt variables """
-    required_vars = ['PGHOST', 'PGUSER', 'PGPORT', 
-                     'PGPASSWORD', 'PGDATABASE', 'E']
-    missing_vars = [_ for _ in required_vars if _ not in os.environ.keys()]
+    vars = ['PGHOST', 'PGUSER', 'PGPORT', 'PGPASSWORD', 'PGDATABASE', 'E']
+    missing_vars = [_ for _ in vars if _ not in os.environ.keys()]
     if len(missing_vars) > 0:
         raise Exception("Error: missing required variables: %s" 
                         % ', '.join(missing_vars))
     else:
-        return {key: os.environ[key] for key in required_vars}
+        return {key: os.environ[key] for key in vars}
 
 def get_connection():
     """ Return connection based on current environment variables """

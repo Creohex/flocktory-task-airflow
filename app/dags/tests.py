@@ -27,7 +27,8 @@ class TestHelpers(unittest.TestCase):
                             in str(context.exception))
         
         # manually add required variables
-        for _ in ['PGHOST', 'PGUSER', 'PGPORT', 'PGPASSWORD', 'PGDATABASE', 'E']:
+        for _ in ['PGHOST', 'PGUSER', 'PGPORT', 
+                  'PGPASSWORD', 'PGDATABASE', 'E']:
             os.environ[_] = 'qwerty'
 
         # expect to get all required environment variables
@@ -35,6 +36,7 @@ class TestHelpers(unittest.TestCase):
             all(key in ("PGHOST", "PGUSER", "PGPORT", 
                         "PGPASSWORD", "PGDATABASE", "E") 
                 for key in common.get_env_vars()))
+
 
 class TestDb(unittest.TestCase):
     @staticmethod
@@ -53,19 +55,26 @@ class TestDb(unittest.TestCase):
     
     @staticmethod
     def prepare_hourly():
-        pass
+        common.query_db(
+            "INSERT INTO logs_hourly_stats (hour, level, num_messages) VALUES "
+            "('1970-01-1 03:00:00', 'WARN', 5), "
+            "('1970-01-1 03:00:00', 'ERROR', 3), "
+            "('1970-01-1 03:00:00', 'INFO', 1);")
     
     @staticmethod
     def cleanup_hourly():
-        pass
+        common.query_db(
+            "DELETE FROM logs_hourly_stats WHERE hour = '1970-01-1 03:00:00'")
     
     @staticmethod
     def prepare_incidents():
-        pass
+        common.query_db(
+            "INSERT INTO incidents (hour, num_errors) VALUES "
+            "('1970-01-1 03:00:00', 3)")
     
     @staticmethod
     def cleanup_incidents():
-        pass
+        common.query_db("DELETE FROM incidents WHERE hour = '1970-01-1 03:00:00'")
 
     def test_get_connection(self):
         print(common.get_env_vars())
@@ -80,9 +89,11 @@ class TestDb(unittest.TestCase):
     def test_log_operations(self):
         try:
             TestDb.prepare_logs()
-            logs1 = common.select_logs(common.datetime_hour_truncated(parser.parse('1970-01-1 01:15:00')))
+            logs1 = common.select_logs(common.datetime_hour_truncated(
+                parser.parse('1970-01-1 01:15:00')))
             self.assertTrue(len(logs1) == 2)
-            logs2 = common.select_logs(common.datetime_hour_truncated(parser.parse('1970-01-1 02:15:09')))
+            logs2 = common.select_logs(common.datetime_hour_truncated(
+                parser.parse('1970-01-1 02:15:09')))
             self.assertTrue(len(logs2) == 1)
         except Exception as e:
             raise
@@ -90,12 +101,27 @@ class TestDb(unittest.TestCase):
             TestDb.cleanup_logs()
         
     def test_hourly_operations(self):
-        pass
+        try:
+            TestDb.prepare_hourly()
+            hourly = common.select_hourly('1970-01-1 03:00:00')
+            self.assertTrue(len(hourly) == 3)
+        except Exception as e:
+            raise
+        finally:
+            TestDb.cleanup_hourly()
     
     def test_incidents_operations(self):
-        pass
+        try:
+            TestDb.prepare_incidents()
+            h, num = common.select_incidents('1970-01-1 03:00:00')[0]
+            self.assertEqual(num, 3)
+        except Exception as e:
+            raise
+        finally:
+            TestDb.cleanup_incidents()
 
 
+# TODO: ... (?)
 class TestLogAnalyzer(unittest.TestCase):
     def test_analyze_hourly(self):
         pass
