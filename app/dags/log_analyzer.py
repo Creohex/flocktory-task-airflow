@@ -22,7 +22,6 @@ default_args = {
 dag = DAG('log_analyzer', default_args=default_args, 
           schedule_interval=timedelta(hours=1))
 
-# TODO: test...
 def analyze_hourly(ds, **kwargs):
     try:
         recap = 'recap:'
@@ -36,7 +35,6 @@ def analyze_hourly(ds, **kwargs):
     except Exception as e:
         return "Error in 'analyze_hourly'. Info: \n\n%s\n\n%s" % (str(e), traceback.format_exc())
 
-# TODO: test...
 def analyze_indicents(ds, **kwargs):
     try:
         ts = common.datetime_hour_truncated(parser.parse(kwargs['ts'])) # scheduled hour
