@@ -29,5 +29,10 @@ CREATE TABLE incidents(
     num_errors INT NOT NULL CHECK (num_errors >= 0)
 );
 
+-- create indexes:
+CREATE INDEX logs_timestamp_index ON logs (timestamp);
+CREATE INDEX logs_hourly_stats_hour_index ON logs_hourly_stats (hour);
+CREATE INDEX incidents_hour_index ON incidents (hour);
+
 -- insert default values:
 INSERT INTO level(level) VALUES ('TRACE'), ('DEBUG'), ('INFO'), ('WARN'), ('ERROR');
