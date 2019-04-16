@@ -29,18 +29,25 @@ class TestHelpers(unittest.TestCase):
         for _ in ['PGHOST', 'PGUSER', 'PGPORT', 'PGPASSWORD', 'PGDATABASE', 'E']:
             os.environ[_] = 'qwerty'
 
-        # expect function to succeed
-        common.get_env_vars()
-
+        # expect to get all required environment variables
+        self.assertTrue(
+            all(key in ("PGHOST", "PGUSER", "PGPORT", "PGPASSWORD", "PGDATABASE", "E") 
+                for key in common.get_env_vars()))
 
 class TestDb(unittest.TestCase):
     @staticmethod
     def prepare_logs():
-        pass
+        common.query_db("INSERT INTO logs (timestamp, level, message) VALUES "
+            "('1970-01-1 01:15:00', 'INFO', 'text1'), "
+            "('1970-01-1 01:30:45', 'DEBUG', 'text2'), "
+            "('1970-01-1 02:15:09', 'ERROR', 'text3')")
     
     @staticmethod
     def cleanup_logs():
-        pass
+        common.query_db("DELETE FROM logs "
+            "WHERE timestamp='1970-01-1 01:15:00' "
+                "OR timestamp='1970-01-1 01:30:45' "
+                "OR timestamp='1970-01-1 02:15:09'")
     
     @staticmethod
     def prepare_hourly():
@@ -66,11 +73,20 @@ class TestDb(unittest.TestCase):
         self.assertEqual([(1,)], common.query_db("select 1"))
     
     def test_levels_operations(self):
-        pass
+        self.assertTrue(len(common.select_log_levels()) == 5)
 
     def test_log_operations(self):
-        pass
-    
+        try:
+            TestDb.prepare_logs()
+            logs1 = common.select_logs(common.datetime_hour_truncated(parser.parse('1970-01-1 01:15:00')))
+            self.assertTrue(len(logs1) == 2)
+            logs2 = common.select_logs(common.datetime_hour_truncated(parser.parse('1970-01-1 02:15:09')))
+            self.assertTrue(len(logs2) == 1)
+        except Exception as e:
+            raise
+        finally:
+            TestDb.cleanup_logs()
+        
     def test_hourly_operations(self):
         pass
     
