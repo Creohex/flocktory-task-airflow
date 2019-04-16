@@ -6,10 +6,12 @@ RUN apt-get update \
     && pip install apache-airflow[postgres] \
     && apt-get purge -y --auto-remove gcc python-dev
 
-COPY ./app/* ./requirements.txt /app/
-
-WORKDIR /app
+COPY ./requirements.txt /
 
 RUN pip install --trusted-host pypi.python.org -r ./requirements.txt
+
+COPY ./app/* /app/
+
+WORKDIR /app
 
 ENTRYPOINT ["bash", "start_server.sh"]
