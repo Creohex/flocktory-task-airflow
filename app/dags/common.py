@@ -22,48 +22,48 @@ def get_connection():
                 user=params['PGUSER'], password=params['PGPASSWORD'], 
                 database=params['PGDATABASE'])
 
-def query_db(query_str,):
+def query_db(query_str):
     """ ... """
     try:
         with get_connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query_str)
+                conn.commit()
                 try:
-                    res = cursor.fetchall()
+                    return cursor.fetchall()
                 except Exception:
-                    res = ''
-                return True, res
+                    return []
     except psycopg2.DatabaseError as e:
-        return False, str(e)
+        raise Exception("query_db error:\n%s" % str(e))
 
 def select_log_levels():
     return query_db("SELECT level FROM level")
 
-# TODO: make selection hour-based
-def select_logs(timestamp=datetime_hour_truncated(datetime.now())):
-
-    return query_db("SELECT timestamp, level, message FROM logs "
-                    "WHERE timestamp = '%s'" % timestamp)
+# TODO: test...
+def select_logs(ts=datetime_hour_truncated(datetime.now())):
+    if not is_datetime_hour_truncated(ts):
+        raise Exception("wrong timestamp arg (%s)" % ts)
+    return query_db(
+        "SELECT timestamp, level, message FROM logs "
+        "WHERE timestamp::date = '%s'::timestamp::date "
+            "AND extract(hour from timestamp) = extract(hour from '%s'::timestamp)"
+        % (ts, ts))
 
 def insert_log(timestamp, level, message):
-    if not is_datetime_hour_truncated(timestamp):
-        raise Exception("wrong timestamp arg (%s)" % timestamp)
     return query_db("INSERT INTO logs (timestamp, level, message) VALUES "
-                    "('%s', '%s', '%s')" % (timestamp, level, message),
-                    do_commit=True)
+                    "('%s', '%s', '%s')" % (timestamp, level, message))
 
 def select_hourly(timestamp=datetime_hour_truncated(datetime.now())):
     return query_db("SELECT hour, level, num_messages "
-                    "FROM logs_hourly_stats WHERE timestamp = '%s'"
+                    "FROM logs_hourly_stats WHERE hour = '%s'"
                     % timestamp)
 
 def insert_hourly(timestamp, level, num_messages):
     if not is_datetime_hour_truncated(timestamp):
         raise Exception("wrong timestamp arg (%s)" % timestamp)
     return query_db(
-        "INSERT INTO logs_hourly_stats hour, level, num_messages VALUES "
-        "('%s', '%s', %s)" % (timestamp, level, num_messages),
-        do_commit=True)
+        "INSERT INTO logs_hourly_stats (hour, level, num_messages) VALUES "
+        "('%s', '%s', %s)" % (timestamp, level, num_messages))
 
 def select_incidents(timestamp=datetime_hour_truncated(datetime.now())):
     return query_db("SELECT hour, num_errors FROM incidents WHERE hour = '%s'"
@@ -73,6 +73,5 @@ def insert_incident(timestamp, num_errors):
     if not is_datetime_hour_truncated(timestamp):
         raise Exception("wrong timestamp arg (%s)" % timestamp)
     return query_db(
-        "INSERT INTO incidents hour, num_errors VALUES ('%s', %s)" 
-        % (timestamp, num_errors),
-        do_commit=True)
+        "INSERT INTO incidents (hour, num_errors) VALUES ('%s', %s)" 
+        % (timestamp, num_errors))

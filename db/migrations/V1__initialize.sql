@@ -17,7 +17,7 @@ CREATE TABLE logs_hourly_stats(
     id SERIAL PRIMARY KEY NOT NULL,
     hour TIMESTAMP NOT NULL,
     level VARCHAR(10) NOT NULL,
-    num_messages INT NOT NULL CHECK (num_messages > 0),
+    num_messages INT NOT NULL CHECK (num_messages >= 0),
 
     FOREIGN KEY (level) REFERENCES level (level)
 );
