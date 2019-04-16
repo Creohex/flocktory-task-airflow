@@ -7,15 +7,18 @@ def datetime_hour_truncated(dt):
     return dt.replace(minute=0, second=0, microsecond=0)
 
 def is_datetime_hour_truncated(dt):
-    """ Verify that datetime object has minutes/seconds/microseconds set to 0 """
+    """ Verify that datetime object has 
+        minutes/seconds/microseconds set to 0 """
     return dt.minute == 0 and dt.second == 0 and dt.microsecond == 0
 
 def get_env_vars():
     """ Return dict containing required environemnt variables """
-    required_vars = ['PGHOST', 'PGUSER', 'PGPORT', 'PGPASSWORD', 'PGDATABASE', 'E']
+    required_vars = ['PGHOST', 'PGUSER', 'PGPORT', 
+                     'PGPASSWORD', 'PGDATABASE', 'E']
     missing_vars = [_ for _ in required_vars if _ not in os.environ.keys()]
     if len(missing_vars) > 0:
-        raise Exception("Error: missing required variables: %s" % ', '.join(missing_vars))
+        raise Exception("Error: missing required variables: %s" 
+                        % ', '.join(missing_vars))
     else:
         return {key: os.environ[key] for key in required_vars}
 
@@ -51,7 +54,7 @@ def select_logs(ts=datetime_hour_truncated(datetime.now())):
     return query_db(
         "SELECT timestamp, level, message FROM logs "
         "WHERE timestamp::date = '%s'::timestamp::date "
-            "AND extract(hour from timestamp) = extract(hour from '%s'::timestamp)"
+        "AND extract(hour from timestamp) = extract(hour from '%s'::timestamp)"
         % (ts, ts))
 
 def insert_log(timestamp, level, message):

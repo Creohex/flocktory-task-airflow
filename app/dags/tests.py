@@ -23,7 +23,8 @@ class TestHelpers(unittest.TestCase):
         # expect not having all required variables
         with self.assertRaises(Exception) as context:
             common.get_env_vars()
-            self.assertTrue('missing required variables' in str(context.exception))
+            self.assertTrue('missing required variables' 
+                            in str(context.exception))
         
         # manually add required variables
         for _ in ['PGHOST', 'PGUSER', 'PGPORT', 'PGPASSWORD', 'PGDATABASE', 'E']:
@@ -31,7 +32,8 @@ class TestHelpers(unittest.TestCase):
 
         # expect to get all required environment variables
         self.assertTrue(
-            all(key in ("PGHOST", "PGUSER", "PGPORT", "PGPASSWORD", "PGDATABASE", "E") 
+            all(key in ("PGHOST", "PGUSER", "PGPORT", 
+                        "PGPASSWORD", "PGDATABASE", "E") 
                 for key in common.get_env_vars()))
 
 class TestDb(unittest.TestCase):
