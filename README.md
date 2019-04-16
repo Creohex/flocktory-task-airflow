@@ -1,7 +1,7 @@
 # flocktory-pipeline-task
 Interview task (apache airflow, docker compose, postresql)
 
-Dockerhub repo: `https://cloud.docker.com/repository/docker/creohex/flocktory-airflow`
+Dockerhub repo: `https://hub.docker.com/r/creohex/flocktory-airflow`
 
 ### Usage:
 
