@@ -8,12 +8,13 @@ services:
     depends_on:
       - db-init
     environment:
+      - E=5
       - PGHOST=db
       - PGUSER=docker
       - PGPORT=5432
       - PGPASSWORD=P@ssw0rd
       - PGDATABASE=main
-      - E=10
+      - GENERATE_TEST_LOGS=true
     volumes:
       - ./app/dags:/root/airflow/dags
     ports:
