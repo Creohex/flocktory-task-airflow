@@ -18,9 +18,12 @@ if [ $1 == "run" ]; then
     fi
 
     docker rm airflow-local > /dev/null 2>&1
+
     docker run -d -p 8080:8080 --env-file=./airflow-server.env \
     -v $(pwd)/app/dags:/root/airflow/dags \
     --name="airflow-local" airflow-local
+
+    docker logs -f airflow-local
 fi
 
 if [ $1 == "stop" ]; then
