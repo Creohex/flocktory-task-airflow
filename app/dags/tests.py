@@ -34,12 +34,49 @@ class TestHelpers(unittest.TestCase):
 
 
 class TestDb(unittest.TestCase):
+    @staticmethod
+    def prepare_logs():
+        pass
+    
+    @staticmethod
+    def cleanup_logs():
+        pass
+    
+    @staticmethod
+    def prepare_hourly():
+        pass
+    
+    @staticmethod
+    def cleanup_hourly():
+        pass
+    
+    @staticmethod
+    def prepare_incidents():
+        pass
+    
+    @staticmethod
+    def cleanup_incidents():
+        pass
+
     def test_get_connection(self):
         print(common.get_env_vars())
         common.get_connection()
 
     def test_query_db(self):
-        self.assertEqual((True, [(1,)]), common.query_db("select 1"))
+        self.assertEqual([(1,)], common.query_db("select 1"))
+    
+    def test_levels_operations(self):
+        pass
+
+    def test_log_operations(self):
+        pass
+    
+    def test_hourly_operations(self):
+        pass
+    
+    def test_incidents_operations(self):
+        pass
+
 
 class TestLogAnalyzer(unittest.TestCase):
     def test_analyze_hourly(self):
