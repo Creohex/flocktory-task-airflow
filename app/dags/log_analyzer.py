@@ -47,7 +47,7 @@ def analyze_indicents(ds, **kwargs):
         ts = common.datetime_hour_truncated(parser.parse(kwargs['ts']))
         E = int(os.environ['E'])
         hourly = common.select_hourly(ts)
-        num = next((_ for _ in hourly if _[1] == "ERROR"), 0)[2]
+        num = next((_[2] for _ in hourly if _[1] == "ERROR"), 0)
         if num > E:
             common.insert_incident(ts, num)
         return "Done analyzing indicents."

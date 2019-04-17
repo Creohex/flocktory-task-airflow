@@ -1,6 +1,5 @@
 import common, time
 
-
 while True:
     try:
         common.get_connection()
@@ -9,3 +8,5 @@ while True:
     except:
         print("couldn't connect to DB, waiting...")
         time.sleep(1)
+
+time.sleep(1)
